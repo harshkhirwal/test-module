@@ -28,28 +28,28 @@ router.get('/', (req, res, next) => {
   });
 });
 
-router.get("/login", function(req, res){
-  res.render("loginPage");
+router.get('/login', function(req, res){
+	res.render('loginPage');
 });
 
-router.post("/login", function(req, res){
-  User.findOne({email: req.body.email}, function(err,user){
-    if(err)
-      res.send("Error processing request");
-    else {
-      console.log(user);
-      console.log(req.body.password);
-      if (user != null && user != {} && user != undefined) {
-        if (user.password != req.body.password)
-          res.send("Incorrect credentials");
+router.post('/login', passport.authenticate('login', {
+	successRedirect : '/dashboard', // redirect to the secure profile section
+	failureRedirect : '/loginfailed', // redirect back to the signup page if there is an error
+	failureFlash : true // allow flash messages
+}));
 
-        else
-          res.render("dashboard", {email: req.body.email});
-      }
-      else
-        res.send("User not found");
-    }
-  });
+router.get('/loginfailed', function(req, res){
+	res.render('loginPage',{ message: req.flash('loginMessage') });
+});
+
+router.get('/dashboard', function(req, res){
+  console.log(req.user)
+	res.render('dashboard');
+});
+
+router.get('/logout', function(req, res) {
+	req.logout();
+	res.redirect('/');
 });
 
 router.get("/register", function(req, res){
@@ -64,3 +64,10 @@ router.post("/register", function(req, res){
   res.send("Done");
 
 });
+
+function checkloginstate(req, res, next) {
+
+  if (!req.isAuthenticated()) {
+    res.redirect('/login');
+  }
+}
