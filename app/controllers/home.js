@@ -29,7 +29,10 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/login', function(req, res){
-	res.render('loginPage');
+  if(req.query.register != "success")
+    res.render('loginPage');
+  else
+    res.render('loginPage', { successMessage: "You have registered successfully" });
 });
 
 router.post('/login', passport.authenticate('login', {
@@ -39,12 +42,12 @@ router.post('/login', passport.authenticate('login', {
 }));
 
 router.get('/loginfailed', function(req, res){
-	res.render('loginPage',{ message: req.flash('loginMessage') });
+	res.render('loginPage',{ errorMessage: req.flash('loginMessage') });
 });
 
 router.get('/dashboard', function(req, res){
   console.log(req.user)
-	res.render('dashboard');
+	res.render('dashboard', {name: req.user.name});
 });
 
 router.get('/logout', function(req, res) {
@@ -57,12 +60,26 @@ router.get("/register", function(req, res){
 
 });
 router.post("/register", function(req, res){
-  var user = new User();
-  user.email = req.body.email;
-  user.password = req.body.password;
-  user.save();
-  res.send("Done");
+  User.findOne({ email: req.body.email}, function(err, result){
+    if(result != undefined && res != null && result != {})
+      res.redirect('/registerfailed');
+    else {
+      var user = new User();
+      user.name = req.body.name;
+      user.email = req.body.email;
+      user.password = req.body.password;
+      user.save();
+      res.redirect('/login?register=success');
+    }
+  });
+});
 
+router.get('/registerfailed', function(req, res){
+	res.render('registerPage',{ errorMessage: 'User already exists' });
+});
+
+router.get("/test", function(req, res) {
+  res.render("test");
 });
 
 function checkloginstate(req, res, next) {

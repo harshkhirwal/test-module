@@ -43,6 +43,7 @@ module.exports = function(passport) {
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
+
         User.findOne({ 'email' :  email }, function(err, user) {
             // if there are any errors, return the error before anything else
             if (err)
@@ -57,6 +58,7 @@ module.exports = function(passport) {
 
             // all is well, return successful user
             return done( null, user );
+
         });
 
     }));

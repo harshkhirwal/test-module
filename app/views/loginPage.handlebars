@@ -6,10 +6,10 @@
       <div class="form-group" style="width: 30%; margin: 25px auto">
   <form action="/login" method="POST">
     <div class="form-group">
-      <input type="email" class="form-control" name="email" placeholder="username">
+      <input type="email" class="form-control" name="email" placeholder="Email">
     </div>
     <div class="form-group">
-      <input type="password" class="form-control" name="password" placeholder="password">
+      <input type="password" class="form-control" name="password" placeholder="Password">
     </div>
     <div class="form-group">
       <button type="submit"class="btn btn-primary btn-lg btn-block"> Submit </button>
@@ -19,8 +19,16 @@
     </div>
   </form>
 </div>
-
-<p class="error-message">{{message}}</p>
+{{#if errorMessage}}
+<div class="alert alert-danger" role="alert" style=" width: 30%; margin: 25px auto">
+    {{errorMessage}}
+{{/if}}
+</div>
+{{#if successMessage}}
+<div class="alert alert-success" role="alert" style=" width: 30%; margin: 25px auto">
+    {{successMessage}}
+</div>
+{{/if}}
 
 
 </div>
